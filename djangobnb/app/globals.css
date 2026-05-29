@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --airbnb-pink: #ff385c;
+  --airbnb-pink-hover: #dd3150;
+
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-airbnb: var(--airbnb-pink);
+  --color-airbnb-hover: var(--airbnb-pink-hover);
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #080808;
+    --foreground: #faf7f7;
+  }
+} */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
