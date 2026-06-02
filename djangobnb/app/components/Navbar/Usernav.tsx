@@ -1,9 +1,15 @@
 'use client';
 import {useState} from "react";
 import MenuLink from "./Menulink";
+import LogoutButton from "../LogoutButton";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useSignupModal from "@/app/hooks/useSignupModal";
-export default function UserNav() {
+
+interface UserNavProps {
+    userId?: string | null;
+}
+
+const UserNav: React.FC<UserNavProps> = ({ userId }) => {
   const [isOpen, setIsOpen] = useState(false);
   const loginModal = useLoginModal();
   const signupModal = useSignupModal();
@@ -48,10 +54,18 @@ export default function UserNav() {
     </button>
     {isOpen && (
       <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-md py-2 border flex flex-col cursor-pointer">
-        <MenuLink label="Login" onClick={() => { setIsOpen(false); loginModal.onOpen(); }} />
-        <MenuLink label="Sign Up" onClick={() => { setIsOpen(false); signupModal.onOpen(); }} />
+        {!userId ? (
+          <>
+            <MenuLink label="Login" onClick={() => { setIsOpen(false); loginModal.onOpen(); }} />
+            <MenuLink label="Sign Up" onClick={() => { setIsOpen(false); signupModal.onOpen(); }} />
+          </>
+        ) : (
+          <LogoutButton />
+        )}
       </div>
     )}
     </div>
   );
 }
+
+export default UserNav;

@@ -22,5 +22,11 @@ class Property(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def image_url(self):
+        if self.images and hasattr(self.images, 'url'):
+            return self.images.url
+        return None
+    
     def __str__(self):
         return self.title
+

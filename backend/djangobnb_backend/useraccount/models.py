@@ -14,14 +14,20 @@ class CustomUserManager(UserManager):
         user.save(using=self.db)
         return user
 
-    def create_user(self, name=None, email=None, password=None, **extra_fields):
+    def create_user(self, username=None, name=None, email=None, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('User must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('User must have is_superuser=True.')
+        if extra_fields.get('is_staff') is not False:
+            raise ValueError('User must have is_staff=False.')
+        if extra_fields.get('is_superuser') is not False:
+            raise ValueError('User must have is_superuser=False.')
+
+        if not username:
+            username = email or ''
+        if not name:
+            name = username or email or ''
+        extra_fields.setdefault('username', username)
 
         return self._create_user(name, email, password, **extra_fields)
     
@@ -33,6 +39,11 @@ class CustomUserManager(UserManager):
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
+
+        username = extra_fields.get('username') or email or ''
+        if not name:
+            name = username or email or ''
+        extra_fields.setdefault('username', username)
 
         return self._create_user(name, email, password, **extra_fields)
     
