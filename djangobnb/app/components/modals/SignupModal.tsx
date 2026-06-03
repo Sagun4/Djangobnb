@@ -30,25 +30,35 @@ const SignupModal = () => {
             password2: password2
         }
 
-        const response = await apiService.post('/api/auth/register/', JSON.stringify(formData));
+        try {
+            const response = await apiService.post('/api/auth/register/', JSON.stringify(formData));
 
-        if (response.access) {
-            await handleLogin(response.user.pk, response.access, response.refresh);
+            if (response.access) {
+                await handleLogin(response.user.pk, response.access, response.refresh);
 
-            signupModal.onClose();
+                signupModal.onClose();
 
-            router.refresh();
-            router.push('/');
-        } else if (response?.key) {
-            signupModal.onClose();
-            router.push('/');
-            return;
-        } else {
-            const tmpErrors: string[] = Object.values(response).map((error: any) => {
-                return error;
-            })
+                router.refresh();
+                router.push('/');
+            } else {
+                const nonErrorKeys = ['key', 'access', 'refresh', 'user'];
+                const tmpErrors: string[] = Object.entries(response || {})
+                    .filter(([key]) => !nonErrorKeys.includes(key))
+                    .map(([, error]: [string, any]) => {
+                        if (Array.isArray(error)) {
+                            return error.join(' ');
+                        }
+                        return String(error);
+                    });
 
-            setErrors(tmpErrors);
+                if (tmpErrors.length > 0) {
+                    setErrors(tmpErrors);
+                } else {
+                    setErrors(['Registration failed. Please try again.']);
+                }
+            }
+        } catch (e) {
+            setErrors(['Connection error. Please try again.']);
         }
     }
 

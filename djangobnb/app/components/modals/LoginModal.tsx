@@ -22,26 +22,35 @@ const LoginModal = () => {
             password: password
         }
 
-        const response = await apiService.post('/api/auth/login/', JSON.stringify(formData))
+        try {
+            const response = await apiService.post('/api/auth/login/', JSON.stringify(formData))
 
-        if (response.access) {
-            await handleLogin(response.user.pk, response.access, response.refresh);
+            if (response.access) {
+                await handleLogin(response.user.pk, response.access, response.refresh);
 
-            loginModal.onClose();
+                loginModal.onClose();
 
-            router.refresh();
-            router.push('/');
-        } else if (response?.key) {
-            loginModal.onClose();
-            router.push('/')
-        } else {
-            const tempErrors: string[] = Object.values(response || {}).map((error: any) => {
-                if (Array.isArray(error)) {
-                    return error.join(' ');
+                router.refresh();
+                router.push('/');
+            } else {
+                const nonErrorKeys = ['key', 'access', 'refresh', 'user'];
+                const tempErrors: string[] = Object.entries(response || {})
+                    .filter(([key]) => !nonErrorKeys.includes(key))
+                    .map(([, error]: [string, any]) => {
+                        if (Array.isArray(error)) {
+                            return error.join(' ');
+                        }
+                        return String(error);
+                    });
+
+                if (tempErrors.length > 0) {
+                    setErrors(tempErrors);
+                } else {
+                    setErrors(['Login failed. Please try again.']);
                 }
-                return error;
-            });
-            setErrors(tempErrors);
+            }
+        } catch (e) {
+            setErrors(['Connection error. Please try again.']);
         }
     }
 

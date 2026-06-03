@@ -67,9 +67,8 @@ CORS_ALLOWED_ORIGINS = [
 
 ]
 
-REST_USE_JWT = True
-
 REST_AUTH = {
+    "USE_JWT": True,
     "JWT_AUTH_HTTPONLY": False,
 }
 
@@ -104,9 +103,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
