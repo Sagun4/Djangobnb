@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { PropertyType } from "./PropertyList";
+import { useRouter } from "next/navigation";
 
 interface PropertyProps {
     property: PropertyType;
@@ -11,9 +12,12 @@ const PropertyListItem = ({ property }: PropertyProps) => {
             ? property.image_url
             : `http://localhost:8000${property.image_url}`
         : null;
-
+    const router = useRouter();
     return (
-        <div className="p-4 cursor-pointer">
+        <div className="p-4 cursor-pointer"
+            onClick={() => router.push(`/properties/${property.id}`)}
+        >
+
             <div className="relative overflow-hidden aspect-square rounded-xl bg-gray-200">
             {imageSrc ? (
                 <Image

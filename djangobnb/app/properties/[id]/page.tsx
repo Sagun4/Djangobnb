@@ -1,49 +1,58 @@
 import Image from "next/image";
-import ReservationSidebar from "@/app/components/properties/eservationSidebar";
+import apiService from "@/app/services/apiService";
+import ReservationSidebar from "@/app/components/properties/ReservationSidebar";
 
-const PropertyDetailPage = () => {
+const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> }) => {
+    const resolvedParams = await params;
+    const response = await apiService.get(`/api/properties/${resolvedParams.id}/`);
+    const property = response.data;
     return (
         <main className="max-w-375 mx-auto px-6 pb-6">
             <div className="w-full h-[64vh] mb-4 overflow-hidden rounded-xl relative">
                 <Image
                     fill
-                    src='/beach1.jpg'
+                    src={property.image_url ? 
+                        (property.image_url.startsWith("http") ? property.image_url : `http://localhost:8000${property.image_url}`) 
+                        : '/beach1.jpg'
+                    }
+                    unoptimized
                     className="object-cover w-full h-full"
-                    alt="Beach house"
+                    alt={property.title || "Property image"}
                 />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="py-6 pr-6 col-span-3">
-                    <h1 className="mb-4 text-4xl">Property name</h1>
+                    <h1 className="mb-4 text-4xl">{property.title}</h1>
 
                     <span className="mb-6 block text-lg text-gray-600">
-                        4 guests - 2 bedrooms - 1 bathroom
+                        {property.guests} guests - {property.bedrooms} bedrooms - {property.bathrooms} bathroom
                     </span>
 
                     <hr />
 
                     <div className="py-6 flex items-center space-x-4">
+                       {property.landlord.avatar_url && (
                         <Image
-                            src="/profile.jpg"
+                            src={property.landlord.avatar_url}
                             width={50}
                             height={50}
                             className="rounded-full w-12 h-12 object-cover"
                             alt="The user name"
                         />
+                          )}
 
-                        <p><strong>John Doe</strong> is your host</p>
+                        <p><strong> {property.landlord.name}</strong> is your host</p>
                     </div>
 
                     <hr />
 
                     <p className="mt-6 text-lg">
-                        Loremalsdjf lkasdj flkajslkdf jaslk djflkas jdlfkjaslkdfj alsk jdflk asjldkf jaslk djflkasj dflkaslkdf
-                        askldfj lasjd flk asjldkf jaslk fjlk asjldfkj aslkdfj lkasjf
+                        {property.description}
                     </p>
                 </div>
 
-                <ReservationSidebar />
+                <ReservationSidebar property={property} />
             </div>
         </main>
     )

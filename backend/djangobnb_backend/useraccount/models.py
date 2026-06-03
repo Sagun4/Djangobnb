@@ -67,5 +67,11 @@ class User(AbstractUser,PermissionsMixin):
 
     objects = CustomUserManager()
 
+    def avatar_url(self):
+        if self.avatar and hasattr(self.avatar, 'url'):
+            return self.avatar.url
+        return None
+
     def __str__(self):
         return self.email
+

@@ -15,7 +15,9 @@ export default async function Navbar() {
             </Link>
          <SearchFilters />
          <div className="flex items-center space-x-4">
-           <AddProperty />
+           <AddProperty
+           userId={userId}
+           />
             <UserNav 
             userId={userId}
             />
