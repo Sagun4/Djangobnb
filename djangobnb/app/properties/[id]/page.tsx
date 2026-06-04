@@ -1,11 +1,16 @@
 import Image from "next/image";
 import apiService from "@/app/services/apiService";
 import ReservationSidebar from "@/app/components/properties/ReservationSidebar";
+import {getUserId} from "@/app/lib/actions";
+import Link from "next/dist/client/link";
 
 const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> }) => {
     const resolvedParams = await params;
     const response = await apiService.get(`/api/properties/${resolvedParams.id}/`);
     const property = response.data;
+
+    const userId = await getUserId();
+
     return (
         <main className="max-w-375 mx-auto px-6 pb-6">
             <div className="w-full h-[64vh] mb-4 overflow-hidden rounded-xl relative">
@@ -31,7 +36,7 @@ const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> 
 
                     <hr />
 
-                    <div className="py-6 flex items-center space-x-4">
+                    <Link href={`/landlords/${property.landlord.id}`} className="py-6 flex items-center space-x-4">
                        {property.landlord.avatar_url && (
                         <Image
                             src={property.landlord.avatar_url}
@@ -43,7 +48,7 @@ const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> 
                           )}
 
                         <p><strong> {property.landlord.name}</strong> is your host</p>
-                    </div>
+                    </Link>
 
                     <hr />
 
@@ -52,7 +57,7 @@ const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> 
                     </p>
                 </div>
 
-                <ReservationSidebar property={property} />
+                <ReservationSidebar property={property} userId={userId} />
             </div>
         </main>
     )

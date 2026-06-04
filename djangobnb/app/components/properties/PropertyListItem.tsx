@@ -1,12 +1,14 @@
 import Image from "next/image";
 import type { PropertyType } from "./PropertyList";
 import { useRouter } from "next/navigation";
+import FavoriteButton from "../FavoriteButton";
 
 interface PropertyProps {
     property: PropertyType;
+    markFavorite: (is_favourited: boolean) => void;
 }
 
-const PropertyListItem = ({ property }: PropertyProps) => {
+const PropertyListItem = ({ property, markFavorite }: PropertyProps) => {
     const imageSrc = property.image_url
         ? property.image_url.startsWith("http")
             ? property.image_url
@@ -29,6 +31,13 @@ const PropertyListItem = ({ property }: PropertyProps) => {
                     className="hover:scale-110 transition-transform duration-300 object-cover"
                 />
             ) : null}
+              {markFavorite && (
+                    <FavoriteButton
+                        id={property.id}
+                        is_favorite={property.is_favourited}
+                        markFavorite={(is_favourited) => markFavorite(is_favourited)}
+                    />
+                )}
             </div>
             <div className="mt-2">
                 <h3 className="text-lg font-semibold">{property.title}</h3>
