@@ -69,7 +69,12 @@ class User(AbstractUser,PermissionsMixin):
 
     def avatar_url(self):
         if self.avatar and hasattr(self.avatar, 'url'):
-            return self.avatar.url
+            if self.avatar.url.startswith('http'):
+                return self.avatar.url
+            url = self.avatar.url
+            if not url.startswith('/'):
+                url = '/' + url
+            return f"{settings.WEBSITE_URL}{url}"
         return None
 
     def __str__(self):

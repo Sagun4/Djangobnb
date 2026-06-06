@@ -24,7 +24,12 @@ class Property(models.Model):
 
     def image_url(self):
         if self.images and hasattr(self.images, 'url'):
-            return self.images.url
+            if self.images.url.startswith('http'):
+                return self.images.url
+            url = self.images.url
+            if not url.startswith('/'):
+                url = '/' + url
+            return f"{settings.WEBSITE_URL}{url}"
         return None
     
     def __str__(self):

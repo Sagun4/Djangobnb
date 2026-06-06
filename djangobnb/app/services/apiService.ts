@@ -13,7 +13,11 @@ const apiService = {
                 "Authorization": `Bearer ${token}`
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            return response.json().catch(() => {
+                throw new Error('API returned invalid JSON');
+            });
+        })
         .then((json) => {
             console.log('json', json);
             resolve(json);
@@ -38,7 +42,11 @@ const apiService = {
                 "Authorization": `Bearer ${token}`
             },
         })
-        .then(response => response.json())
+        .then(response => {
+            return response.json().catch(() => {
+                throw new Error('API returned invalid JSON');
+            });
+        })
         .then((json) => {
             console.log('json', json);
             resolve(json);
@@ -64,7 +72,11 @@ const apiService = {
                
             },
         })
-        .then(response => response.json())
+        .then(response => {
+            return response.json().catch(() => {
+                throw new Error('API returned invalid JSON');
+            });
+        })
         .then((json) => {
             console.log('json', json);
             resolve(json);

@@ -28,10 +28,18 @@ def property_list(request):
     favourites = []
     properties = Property.objects.all()
     serializer = PropertySerializer(properties, many=True)
+
+    favorites = request.GET.get('favorites', '')
+
     landlord_id = request.GET.get('landlord_id')
     if landlord_id:
         properties = properties.filter(landlord__id=landlord_id)
         serializer = PropertySerializer(properties, many=True)
+
+    if favorites and user:
+        properties = properties.filter(favourited=user)
+
+
    
     if user:
         for property in properties:

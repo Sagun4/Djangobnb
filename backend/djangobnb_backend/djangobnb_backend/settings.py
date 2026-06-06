@@ -22,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-dev-secret-key-1234567890')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('DEBUG', default=0))
+DEBUG = bool(os.environ.get('DEBUG', default=1))
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(' ')
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1 [::1]').split(' ')
 
 AUTH_USER_MODEL = 'useraccount.User'
 
@@ -74,9 +74,18 @@ REST_AUTH = {
 
 
 WEBSITE_URL ='http://localhost:8000'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+
+}
+
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -99,6 +108,7 @@ INSTALLED_APPS = [
 
     'useraccount',
     'properties',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -131,21 +141,29 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'djangobnb_backend.wsgi.application'
-
+ASGI_APPLICATION = 'djangobnb_backend.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.environ.get("SQL_ENGINE"),
-        'NAME': os.environ.get("SQL_DATABASE"),
-        'USER': os.environ.get("SQL_USER"),
-        'PASSWORD': os.environ.get("SQL_PASSWORD"),
-        'HOST': os.environ.get("SQL_HOST"),
-        'PORT': os.environ.get("SQL_PORT"),
+if os.environ.get("SQL_ENGINE"):
+    DATABASES = {
+        'default': {
+            'ENGINE': os.environ.get("SQL_ENGINE"),
+            'NAME': os.environ.get("SQL_DATABASE"),
+            'USER': os.environ.get("SQL_USER"),
+            'PASSWORD': os.environ.get("SQL_PASSWORD"),
+            'HOST': os.environ.get("SQL_HOST"),
+            'PORT': os.environ.get("SQL_PORT"),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation

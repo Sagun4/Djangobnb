@@ -30,8 +30,7 @@ const LoginModal = () => {
 
                 loginModal.onClose();
 
-                router.refresh();
-                router.push('/');
+                window.location.href = '/';
             } else {
                 const nonErrorKeys = ['key', 'access', 'refresh', 'user'];
                 const tempErrors: string[] = Object.entries(response || {})

@@ -16,13 +16,14 @@ const LandlordDetailPage = async ({ params }: { params: Promise<{ id: string }>}
                 <aside className="col-span-1 mb-4">
                     <div className="flex flex-col items-center p-6 rounded-xl border border-gray-300 shadow-xl">
                         {landlord.avatar_url ? (
-                            <Image
-                                src={landlord.avatar_url}
-                                width={200}
-                                height={200}
-                                alt="Landlord avatar"
-                                className="rounded-full"
-                            />
+                            <div className="w-[200px] h-[200px] relative rounded-full overflow-hidden">
+                                <Image
+                                    src={landlord.avatar_url}
+                                    fill
+                                    alt="Landlord avatar"
+                                    className="object-cover"
+                                />
+                            </div>
                         ) : (
                             <div className="w-[200px] h-[200px] rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-6xl">
                                 {landlord.name?.charAt(0)?.toUpperCase() || '?'}
@@ -32,7 +33,10 @@ const LandlordDetailPage = async ({ params }: { params: Promise<{ id: string }>}
                         <h1 className="mt-6 text-2xl">{landlord.name}</h1>
 
                         {userId != resolvedParams.id && (
-                            <ContactButton />
+                            <ContactButton
+                            userId={userId}
+                            landlordId={resolvedParams.id}
+                            />
                         )}
                     </div>
                 </aside>

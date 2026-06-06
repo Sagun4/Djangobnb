@@ -38,8 +38,7 @@ const SignupModal = () => {
 
                 signupModal.onClose();
 
-                router.refresh();
-                router.push('/');
+                window.location.href = '/';
             } else {
                 const nonErrorKeys = ['key', 'access', 'refresh', 'user'];
                 const tmpErrors: string[] = Object.entries(response || {})
