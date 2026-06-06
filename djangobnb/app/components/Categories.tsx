@@ -1,3 +1,7 @@
+'use client';
+import { useState } from "react";
+import useSearchModal,{SearchQuery} from "@/app/hooks/useSearchModal";
+
 const categories = [
   {
     key: "all",
@@ -246,17 +250,36 @@ const categories = [
 ];
 
 export default function Categories() {
-  const activeKey = "all"; // This can be dynamic based on user selection
+  const searchModal = useSearchModal();
+  const [category, setCategory] = useState<string>('');
+  const activeKey = category || 'all';
+
+  const _setCategory = (_category: string) => {
+    setCategory(_category);
+
+    const query: SearchQuery = {
+        country: searchModal.query.country,
+        checkIn: searchModal.query.checkIn,
+        checkOut: searchModal.query.checkOut,
+        guests: searchModal.query.guests,
+        bathrooms: searchModal.query.bathrooms,
+        bedrooms: searchModal.query.bedrooms,
+        category: _category
+    }
+     searchModal.setQuery(query);
+
+  }
 
   return (
     <section className="w-full border-b bg-white">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center gap-6 overflow-x-auto py-4 ">
-          {categories.map((category) => {
-            const isActive = category.key === activeKey;
+          {categories.map((cat) => {
+            const isActive = cat.key === activeKey;
             return (
               <button
-                key={category.key}
+                key={cat.key}
+                onClick={() => _setCategory(cat.key === 'all' ? '' : cat.key)}
                 type="button"
                 className={`group flex shrink-0 flex-col items-center gap-2 border-b-2 pb-2 text-xs font-semibold transition duration-300 ${
                   isActive
@@ -265,9 +288,9 @@ export default function Categories() {
                 }`}
               >
                 <span className="text-gray-600 group-hover:text-gray-900">
-                  {category.icon}
+                  {cat.icon}
                 </span>
-                <span>{category.label}</span>
+                <span>{cat.label}</span>
               </button>
             );
           })}

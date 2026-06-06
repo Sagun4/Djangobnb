@@ -62,7 +62,7 @@ if(
 
     if(response.success) {
         console.log('Property created successfully:', response.data);
-        router.push('/');
+        router.push('/?added=true');
         addPropertyModal.onClose();
     } else {
         console.log('Error creating property:', response);

@@ -34,7 +34,7 @@ const PropertyListItem = ({ property, markFavorite }: PropertyProps) => {
               {markFavorite && (
                     <FavoriteButton
                         id={property.id}
-                        is_favorite={property.is_favourited}
+                        is_favorite={property.is_favorite}
                         markFavorite={(is_favourited) => markFavorite(is_favourited)}
                     />
                 )}

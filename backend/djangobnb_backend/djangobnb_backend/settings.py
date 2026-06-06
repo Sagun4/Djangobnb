@@ -28,6 +28,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-dev-secret-key-
 DEBUG = bool(os.environ.get('DEBUG', default=1))
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1 [::1]').split(' ')
+if '127.0.0.1' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('127.0.0.1')
+if 'localhost' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('localhost')
 
 AUTH_USER_MODEL = 'useraccount.User'
 
@@ -73,7 +77,7 @@ REST_AUTH = {
 }
 
 
-WEBSITE_URL ='http://localhost:8000'
+WEBSITE_URL = os.environ.get('WEBSITE_URL', 'http://127.0.0.1:8000')
 
 CHANNEL_LAYERS = {
     'default': {
