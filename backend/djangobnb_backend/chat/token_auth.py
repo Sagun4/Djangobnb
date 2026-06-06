@@ -22,7 +22,13 @@ class TokenAuthMiddleware(BaseMiddleware):
         self.inner = inner
     
     async def __call__(self, scope, receive, send):
-        query = dict((x.split('=') for x in scope['query_string'].decode().split('&')))
+        query_string = scope['query_string'].decode()
+        query = {}
+        if query_string:
+            for param in query_string.split('&'):
+                if '=' in param:
+                    k, v = param.split('=', 1)
+                    query[k] = v
         token_key = query.get('token')
         scope['user'] = await get_user(token_key)
         return await super().__call__(scope, receive, send)

@@ -8,7 +8,7 @@ export default async function Navbar() {
     const userId = await getUserId();
     return (
     <nav className="w-full fixed top-0 left-0 py-6 border-b bg-white z-10"> 
-     <div className="max-w-375 mx-auto px-4">
+      <div className="max-w-[1500px] mx-auto px-4">
         <div className="flex items-center justify-between">
             <Link href="/" >
                <Image src="/airnest.png" alt="Logo" width={100} height={100} loading="eager" className="object-contain" />

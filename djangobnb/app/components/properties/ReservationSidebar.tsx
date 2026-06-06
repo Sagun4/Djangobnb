@@ -96,28 +96,28 @@ const ReservationSidebar : React.FC<ReservationSidebarProps> = ({ property , use
     }
 
     useEffect(() => {
-            getReservations();
-        if(dateRange.startDate && dateRange.endDate) {
+        getReservations();
+    }, [property.id]);
+
+    useEffect(() => {
+        if (dateRange.startDate && dateRange.endDate) {
             const dayCount = differenceInDays(
                 dateRange.endDate,
-                 dateRange.startDate
-                );
-                if (dayCount && price) {
-                const _fee = ((price * dayCount) /100)* 5;
+                dateRange.startDate
+            );
+            if (dayCount && price) {
+                const _fee = ((price * dayCount) / 100) * 5;
                 setFee(_fee);
                 setTotalPrice(price * dayCount + _fee);
                 setNights(dayCount);
-                } else {
-                const _fee = (price /100)* 5;
+            } else {
+                const _fee = (price / 100) * 5;
                 setFee(_fee);
                 setTotalPrice(price + _fee);
                 setNights(1);
-
-                }
-
+            }
         }
-
-    }, [dateRange])
+    }, [dateRange, price]);
     return (
         <aside className="mt-6 p-6 col-span-2 rounded-xl border border-gray-300 shadow-xl">
             <h2 className="mb-5 text-2xl">${price.toFixed(2)} per night</h2>
