@@ -5,6 +5,7 @@ import { Range } from 'react-date-range';
 import {format} from 'date-fns';
 import apiService from '@/app/services/apiService';
 import useLoginModal from '@/app/hooks/useLoginModal';
+import { useRouter } from 'next/navigation';
 import {differenceInDays ,eachDayOfInterval } from 'date-fns';
 import { da } from 'date-fns/locale';
 const initialDateRange= {
@@ -26,6 +27,7 @@ interface ReservationSidebarProps {
 
 const ReservationSidebar : React.FC<ReservationSidebarProps> = ({ property , userId }) => {
     const loginModal = useLoginModal();
+    const router = useRouter();
 
     const price = parseFloat(String(property.price_per_night));
     const [fee, setFee] = useState<number>(0);
@@ -37,13 +39,37 @@ const ReservationSidebar : React.FC<ReservationSidebarProps> = ({ property , use
     const [bookedDates, setBookedDates] = useState<Date[]>([]);
 
     const [guests, setGuests] = useState<number>(1);
+    const [error, setError] = useState<string | null>(null);
     const guestsRange = Array.from({ length: property.guests }, (_, i) => i + 1);
 
     const performBooking = async () => {
         console.log('performBooking', userId);
+        setError(null);
 
         if (userId) {
             if (dateRange.startDate && dateRange.endDate) {
+                try {
+                    const range = eachDayOfInterval({
+                        start: dateRange.startDate,
+                        end: dateRange.endDate
+                    });
+                    
+                    const hasOverlap = range.some(date => 
+                        bookedDates.some(bookedDate => 
+                            date.getFullYear() === bookedDate.getFullYear() &&
+                            date.getMonth() === bookedDate.getMonth() &&
+                            date.getDate() === bookedDate.getDate()
+                        )
+                    );
+
+                    if (hasOverlap) {
+                        setError('This property is already booked for the selected dates.');
+                        return;
+                    }
+                } catch (e) {
+                    console.log('Error checking date overlap:', e);
+                }
+
                 const formData = new FormData();
                 formData.append('guests', guests.toString());
                 formData.append('start_date', format(dateRange.startDate, 'yyyy-MM-dd'));
@@ -54,9 +80,11 @@ const ReservationSidebar : React.FC<ReservationSidebarProps> = ({ property , use
                 const response = await apiService.post(`/api/properties/${property.id}/book/`, formData);
 
                 if (response.success) {
-                    console.log('Booking successful')
+                    console.log('Booking successful');
+                    router.push('/?booking_success=true');
                 } else {
                     console.log('Something went wrong...');
+                    setError(response.error || 'Something went wrong. Please try again.');
                 }
             }
         } else {
@@ -65,6 +93,7 @@ const ReservationSidebar : React.FC<ReservationSidebarProps> = ({ property , use
     }
 
     const _setDateRange = (selection :any) => {
+        setError(null);
         const newStartDate = new Date(selection.startDate);
         const newEndDate = new Date(selection.endDate);
 
@@ -86,8 +115,8 @@ const ReservationSidebar : React.FC<ReservationSidebarProps> = ({ property , use
 
         reservations.forEach((reservation: any) => {
             const range = eachDayOfInterval({
-                start: new Date(reservation.start_date),
-                end: new Date(reservation.end_date)
+                start: new Date(reservation.start_date + 'T00:00:00'),
+                end: new Date(reservation.end_date + 'T00:00:00')
             });
             dates = [...dates, ...range];  
         })
@@ -131,7 +160,10 @@ const ReservationSidebar : React.FC<ReservationSidebarProps> = ({ property , use
 
                 <select 
                 value={guests}
-                onChange={(e) => setGuests(parseInt(e.target.value))}
+                onChange={(e) => {
+                    setGuests(parseInt(e.target.value));
+                    setError(null);
+                }}
                 className="w-full -ml-1 text-xm">
                     {guestsRange.map((num) => (
                         <option key={num} value={num}>
@@ -141,9 +173,15 @@ const ReservationSidebar : React.FC<ReservationSidebarProps> = ({ property , use
                 </select>
             </div>
 
+            {error && (
+                <div className="mb-4 p-4 bg-airbnb text-white rounded-xl text-sm font-semibold transition-all duration-300">
+                    {error}
+                </div>
+            )}
+
             <div
                 onClick={performBooking} 
-            className="w-full mb-6 py-6 text-center text-white bg-airbnb hover:bg-airbnb-dark rounded-xl">Book</div>
+            className="w-full mb-6 py-6 text-center text-white bg-airbnb hover:bg-airbnb-dark rounded-xl cursor-pointer">Book</div>
 
             <div className="mb-4 flex justify-between align-center">
                 <p>${price.toFixed(2)} * {nights} nights</p>

@@ -151,6 +151,19 @@ def book_property(request, pk):
 
         property = Property.objects.get(pk=pk)
 
+        # Check for date conflicts (overlap check)
+        conflicting_reservations = Reservation.objects.filter(
+            property=property,
+            start_date__lte=end_date,
+            end_date__gte=start_date
+        )
+        
+        if conflicting_reservations.exists():
+            return JsonResponse({
+                'success': False,
+                'error': 'This property is already booked for the selected dates.'
+            })
+
         Reservation.objects.create(
             property=property,
             guest=request.user,
