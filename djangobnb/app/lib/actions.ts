@@ -31,7 +31,7 @@ export async function handleRefresh() {
         if (json.access) {
             cookieStore.set('session_access_token', json.access, {
                 httpOnly: true,
-                secure:false, // Set to false to allow client-side access
+                secure: process.env.NODE_ENV === 'production',
                 maxAge: 60 * 60, // 60 minutes
                 path: '/'
             });
@@ -52,21 +52,21 @@ export async function handleLogin(userId: string, accessToken: string, refreshTo
 
     cookieStore.set('session_userid', userId, {
         httpOnly: true,
-        secure: false, // Set to false to allow client-side access
+        secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60 * 24 * 7, // One week
         path: '/'
     });
 
     cookieStore.set('session_access_token', accessToken, {
         httpOnly: true,
-        secure: false, // Set to false to allow client-side access
+        secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60, // 60 minutes
         path: '/'
     });
 
     cookieStore.set('session_refresh_token', refreshToken, {
         httpOnly: true,
-        secure: false, // Set to false to allow client-side access
+        secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60 * 24 * 7, // One week
         path: '/'
     });
