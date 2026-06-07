@@ -5,7 +5,7 @@ import BookingSuccessBanner from "./components/BookingSuccessBanner";
 
 export default function Home() {
   return (
-    <main className="max-w-[1500px] mx-auto px-6">
+    <main className="max-w-375 mx-auto px-6">
       <Suspense fallback={null}>
         <BookingSuccessBanner />
       </Suspense>

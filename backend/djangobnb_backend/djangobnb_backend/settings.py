@@ -37,6 +37,11 @@ AUTH_USER_MODEL = 'useraccount.User'
 
 SITE_ID = 1
 
+if DEBUG:
+    WEBSITE_URL = 'http://localhost:8000'
+else:
+    WEBSITE_URL = os.environ.get('WEBSITE_URL', 'http://167.172.91.46:1337')
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
@@ -66,8 +71,27 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://127.0.0.1:8000",
+    "http://167.172.91.46:1337",
 
 ]
+CORS_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:8000",
+    "http://167.172.91.46:1337",
+
+]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:8000",
+    "http://167.172.91.46:1337",
+
+]
+
+
+
+
+
 
 REST_AUTH = {
     "USE_JWT": True,
