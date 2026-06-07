@@ -10,6 +10,7 @@ channels==4.3.2
 daphne==4.2.1
 requests==2.32.3
 gunicorn==26.0.0
+python-dotenv==1.2.2
 
 
 
