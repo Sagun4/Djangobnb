@@ -15,7 +15,7 @@ const PropertyListItem = ({ property, markFavorite, isLandlordView }: PropertyPr
     const router = useRouter();
     return (
         <div className="p-4 cursor-pointer"
-            onClick={() => router.push(`/properties/${property.id}`)}
+            onClick={() => router.push(`/properties/${property.id}/`)}
         >
 
             <div className="relative overflow-hidden aspect-square rounded-xl bg-gray-200">

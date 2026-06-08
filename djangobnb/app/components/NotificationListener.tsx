@@ -117,7 +117,7 @@ const NotificationListener: React.FC<NotificationListenerProps> = ({ userId }) =
             <div 
                 onClick={() => {
                     setIsVisible(false);
-                    router.push('/myproperties');
+                    router.push('/myproperties/');
                 }}
                 className="mb-6 p-4 bg-emerald-500 text-white rounded-xl flex items-center justify-between shadow-md transition-all duration-300 animate-in fade-in slide-in-from-top-4 cursor-pointer hover:bg-emerald-600"
             >
@@ -148,7 +148,7 @@ const NotificationListener: React.FC<NotificationListenerProps> = ({ userId }) =
             onClick={() => {
                 setIsVisible(false);
                 if (notification.conversationId) {
-                    router.push(`/inbox/${notification.conversationId}`);
+                    router.push(`/inbox/${notification.conversationId}/`);
                 }
             }}
             className="fixed top-32 right-6 z-50 max-w-sm w-full bg-emerald-500 text-white p-4 rounded-xl flex items-start justify-between shadow-xl transition-all duration-300 animate-in fade-in slide-in-from-top-4 cursor-pointer hover:bg-emerald-600"

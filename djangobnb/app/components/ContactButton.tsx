@@ -21,7 +21,7 @@ const ContactButton: React.FC<ContactButtonProps> = ({
             const conversation = await apiService.get(`/api/chat/start/${landlordId}/`)
 
             if (conversation.conversation_id) {
-                router.push(`/inbox/${conversation.conversation_id}`)
+                router.push(`/inbox/${conversation.conversation_id}/`)
             }
         } else {
             loginModal.onOpen();

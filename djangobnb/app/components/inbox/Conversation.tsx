@@ -19,7 +19,7 @@ const Conversation: React.FC<ConversationProps> = ({
 
     return (
         <div 
-            onClick={() => router.push(`/inbox/${conversation.id}`)}
+            onClick={() => router.push(`/inbox/${conversation.id}/`)}
             className="px-6 py-4 cursor-pointer border border-gray-300 rounded-xl flex items-center space-x-4 hover:shadow-md transition"
         >
             <div className="w-12 h-12 relative rounded-full overflow-hidden bg-gray-200 shrink-0">
