@@ -30,11 +30,15 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-dev-secret-key-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('DEBUG', default=1))
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1 [::1]').split(' ')
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1 [::1] 167.172.91.46 djangobnb-navy.vercel.app').split(' ')
 if '127.0.0.1' not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append('127.0.0.1')
 if 'localhost' not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append('localhost')
+if '167.172.91.46' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('167.172.91.46')
+if 'djangobnb-navy.vercel.app' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('djangobnb-navy.vercel.app')
 
 AUTH_USER_MODEL = 'useraccount.User'
 
@@ -75,12 +79,14 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://127.0.0.1:8000",
     "http://167.172.91.46:1337",
+    "https://djangobnb-navy.vercel.app",
 
 ]
 CORS_TRUSTED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://127.0.0.1:8000",
     "http://167.172.91.46:1337",
+    "https://djangobnb-navy.vercel.app",
 
 ]
 
@@ -88,6 +94,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:3000",
     "http://127.0.0.1:8000",
     "http://167.172.91.46:1337",
+    "https://djangobnb-navy.vercel.app",
 
 ]
 

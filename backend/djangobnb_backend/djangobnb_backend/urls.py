@@ -22,7 +22,10 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/properties/', include('properties.urls')),
+    path('api/properties', include('properties.urls')),
     path('api/auth/', include('useraccount.urls')),
+    path('api/auth', include('useraccount.urls')),
     path('api/chat/', include('chat.urls')),
+    path('api/chat', include('chat.urls')),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
