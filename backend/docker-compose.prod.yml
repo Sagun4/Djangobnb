@@ -19,11 +19,14 @@ services:
       - ./djangobnb_backend/:/usr/src/djangobnb_backend
     expose:
       - "8000"
+    environment:
+      - REDIS_HOST=redis
     env_file:
       - ./.env.dev
     depends_on:
       - db 
       - daphne
+      - redis
   daphne:
     build: ./djangobnb_backend
     command: daphne --bind 0.0.0.0 -p 8002 djangobnb_backend.asgi:application
@@ -31,10 +34,16 @@ services:
       - "8002:8002"
     volumes:
       - ./djangobnb_backend/:/usr/src/djangobnb_backend
+    environment:
+      - REDIS_HOST=redis
     env_file:
       - ./.env.dev
     depends_on:
       - db
+      - redis
+  redis:
+    image: redis:7.2-alpine
+    restart: always
   db:
     image: postgres:18
     volumes:

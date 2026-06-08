@@ -272,8 +272,8 @@ export default function Categories() {
 
   return (
     <section className="w-full border-b bg-white">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center gap-6 overflow-x-auto py-4 ">
+      <div className="max-w-[1500px] mx-auto px-6">
+        <div className="flex items-center justify-between overflow-x-auto py-4 gap-4">
           {categories.map((cat) => {
             const isActive = cat.key === activeKey;
             return (
