@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
         port: "1337",
         pathname: "/media/**",
       },
+      {
+        protocol: "https",
+        hostname: "api.paudelsagun.com.np",
+        pathname: "/media/**",
+      },
     ],
   },
   async rewrites() {

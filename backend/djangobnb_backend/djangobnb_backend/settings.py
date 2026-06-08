@@ -77,19 +77,25 @@ REST_FRAMEWORK = {
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://127.0.0.1:8000",
     "http://167.172.91.46:1337",
     "https://djangobnb-navy.vercel.app",
-
+    "https://paudelsagun.com.np",
+    "https://www.paudelsagun.com.np",
+    "https://api.paudelsagun.com.np",
 ]
 CORS_TRUSTED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://127.0.0.1:8000",
     "http://167.172.91.46:1337",
     "https://djangobnb-navy.vercel.app",
-
+    "https://paudelsagun.com.np",
+    "https://www.paudelsagun.com.np",
+    "https://api.paudelsagun.com.np",
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -97,6 +103,9 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:8000",
     "http://167.172.91.46:1337",
     "https://djangobnb-navy.vercel.app",
+    "https://paudelsagun.com.np",
+    "https://www.paudelsagun.com.np",
+    "https://api.paudelsagun.com.np",
 
 ]
 
