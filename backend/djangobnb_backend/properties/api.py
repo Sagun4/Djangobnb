@@ -183,7 +183,7 @@ def book_property(request, pk):
                 channel_layer = get_channel_layer()
                 if channel_layer:
                     async_to_sync(channel_layer.group_send)(
-                        f'user_{property.landlord.id}',
+                        f'user_{str(property.landlord.id)}',
                         {
                             'type': 'booking_notification',
                             'property_id': str(property.id),
