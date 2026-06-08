@@ -44,10 +44,12 @@ AUTH_USER_MODEL = 'useraccount.User'
 
 SITE_ID = 1
 
-if DEBUG:
-    WEBSITE_URL = 'http://localhost:8000'
-else:
-    WEBSITE_URL = os.environ.get('WEBSITE_URL', 'http://167.172.91.46:1337')
+WEBSITE_URL = os.environ.get('WEBSITE_URL')
+if not WEBSITE_URL:
+    if os.environ.get('SQL_HOST') == 'db':
+        WEBSITE_URL = 'http://167.172.91.46:1337'
+    else:
+        WEBSITE_URL = 'http://localhost:8000'
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
@@ -108,8 +110,6 @@ REST_AUTH = {
     "JWT_AUTH_HTTPONLY": False,
 }
 
-
-WEBSITE_URL = os.environ.get('WEBSITE_URL', 'http://127.0.0.1:8000')
 
 CHANNEL_LAYERS = {
     'default': {
