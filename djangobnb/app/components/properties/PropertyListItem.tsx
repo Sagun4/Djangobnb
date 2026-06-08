@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { PropertyType } from "./PropertyList";
 import { useRouter } from "next/navigation";
 import FavoriteButton from "../FavoriteButton";
+import { formatImageUrl } from "@/app/services/apiService";
 
 interface PropertyProps {
     property: PropertyType;
@@ -9,11 +10,7 @@ interface PropertyProps {
 }
 
 const PropertyListItem = ({ property, markFavorite }: PropertyProps) => {
-    const imageSrc = property.image_url
-        ? property.image_url.startsWith("http")
-            ? property.image_url
-            : `${process.env.NEXT_PUBLIC_API_HOST || 'http://localhost:8000'}${property.image_url}`
-        : null;
+    const imageSrc = formatImageUrl(property.image_url);
     const router = useRouter();
     return (
         <div className="p-4 cursor-pointer"

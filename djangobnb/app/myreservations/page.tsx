@@ -1,5 +1,5 @@
 import Image from "next/image";
-import apiService from "../services/apiService";
+import apiService, { formatImageUrl } from "../services/apiService";
 import Link from "next/link";
 import { getUserId } from "../lib/actions";
 
@@ -23,11 +23,7 @@ const MyReservationsPage = async () => {
 
             <div className="space-y-4">
                 {reservations.map((reservation: any) => {
-                    const imageSrc = reservation.property.image_url
-                        ? (reservation.property.image_url.startsWith("http") 
-                            ? reservation.property.image_url 
-                            : `${process.env.NEXT_PUBLIC_API_HOST || 'http://localhost:8000'}${reservation.property.image_url}`)
-                        : '/beach1.jpg';
+                    const imageSrc = formatImageUrl(reservation.property.image_url) || '/beach1.jpg';
                     return (              
                         <div key={reservation.id} className="p-5 grid grid-cols-1 md:grid-cols-4 gap-4 shadow-md border border-gray-300 rounded-xl">
                             <div className="col-span-1">

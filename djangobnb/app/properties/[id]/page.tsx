@@ -1,5 +1,5 @@
 import Image from "next/image";
-import apiService from "@/app/services/apiService";
+import apiService, { formatImageUrl } from "@/app/services/apiService";
 import ReservationSidebar from "@/app/components/properties/ReservationSidebar";
 import {getUserId} from "@/app/lib/actions";
 import Link from "next/dist/client/link";
@@ -16,10 +16,7 @@ const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> 
             <div className="w-full h-[64vh] mb-4 overflow-hidden rounded-xl relative">
                 <Image
                     fill
-                    src={property.image_url ? 
-                        (property.image_url.startsWith("http") ? property.image_url : `${process.env.NEXT_PUBLIC_API_HOST || 'http://localhost:8000'}${property.image_url}`) 
-                        : '/beach1.jpg'
-                    }
+                    src={formatImageUrl(property.image_url) || '/beach1.jpg'}
                     unoptimized
                     className="object-cover w-full h-full"
                     alt={property.title || "Property image"}
