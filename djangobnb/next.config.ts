@@ -24,6 +24,10 @@ const nextConfig: NextConfig = {
     const backendHost = process.env.NEXT_PUBLIC_API_HOST || 'http://167.172.91.46:1337';
     return [
       {
+        source: '/api/:path*/',
+        destination: `${backendHost}/api/:path*/`,
+      },
+      {
         source: '/api/:path*',
         destination: `${backendHost}/api/:path*`,
       },
