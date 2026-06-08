@@ -14,7 +14,7 @@ export const getApiHost = () => {
 export const formatImageUrl = (url: string | null | undefined) => {
     if (!url) return null;
     if (url.startsWith('http')) {
-        if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
+        if (typeof window === 'undefined' || window.location.protocol === 'https:') {
             return url.replace(/^https?:\/\/[^\/]+/, '');
         }
         return url;
