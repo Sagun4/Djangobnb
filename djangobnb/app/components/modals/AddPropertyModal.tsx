@@ -3,7 +3,7 @@
 import loginModal from "@/app/hooks/useLoginModal";
 import Image from "next/image";
 import Modal from "./Modal";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import CustomButton from "../forms/CustomButton";
 import useAddPropertyModal from "@/app/hooks/usePropertyModal";
 import Categories from  "../addproperty/Categories";
@@ -25,6 +25,26 @@ const [dataGuests, setDataGuests] = useState('');
 const [dataCountry, setDataCountry] = useState<SelectCountryValue>();
 const [dataImage, setDataImage] = useState<File | null>(null);
 const router = useRouter();
+
+const resetForm = () => {
+    setCurrentStep(1);
+    setDataTitle("");
+    setDataDescription("");
+    setDataCategory("");
+    setDataPrice('');
+    setDataBedrooms('');
+    setDataBathrooms('');
+    setDataGuests('');
+    setDataCountry(undefined);
+    setDataImage(null);
+    setErrors([]);
+}
+
+useEffect(() => {
+    if (!addPropertyModal.isOpen) {
+        resetForm();
+    }
+}, [addPropertyModal.isOpen]);
 
 const setCategory = (category: string) => {
     setDataCategory(category);
