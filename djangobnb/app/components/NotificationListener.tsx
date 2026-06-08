@@ -112,28 +112,51 @@ const NotificationListener: React.FC<NotificationListenerProps> = ({ userId }) =
 
     if (!isVisible || !notification) return null;
 
+    if (notification.type === 'booking') {
+        return (
+            <div 
+                onClick={() => {
+                    setIsVisible(false);
+                    router.push('/myproperties');
+                }}
+                className="mb-6 p-4 bg-emerald-500 text-white rounded-xl flex items-center justify-between shadow-md transition-all duration-300 animate-in fade-in slide-in-from-top-4 cursor-pointer hover:bg-emerald-600"
+            >
+                <div className="flex items-center space-x-3">
+                    <svg className="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="font-semibold">{notification.body}</span>
+                </div>
+                <button 
+                    onClick={(e) => {
+                        e.stopPropagation(); // Avoid navigating when dismiss is clicked
+                        dismiss();
+                    }} 
+                    className="hover:bg-emerald-600 p-1.5 rounded-lg transition-colors cursor-pointer shrink-0"
+                    aria-label="Dismiss message"
+                >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        );
+    }
+
     return (
         <div 
             onClick={() => {
                 setIsVisible(false);
-                if (notification.type === 'chat' && notification.conversationId) {
+                if (notification.conversationId) {
                     router.push(`/inbox/${notification.conversationId}`);
-                } else if (notification.type === 'booking') {
-                    router.push('/myproperties');
                 }
             }}
-            className="fixed top-24 right-6 z-50 max-w-sm w-full bg-emerald-500 text-white p-4 rounded-xl flex items-start justify-between shadow-xl transition-all duration-300 animate-in fade-in slide-in-from-top-4 cursor-pointer hover:bg-emerald-600"
+            className="fixed top-32 right-6 z-50 max-w-sm w-full bg-emerald-500 text-white p-4 rounded-xl flex items-start justify-between shadow-xl transition-all duration-300 animate-in fade-in slide-in-from-top-4 cursor-pointer hover:bg-emerald-600"
         >
             <div className="flex items-start space-x-3 pr-2">
-                {notification.type === 'chat' ? (
-                    <svg className="w-6 h-6 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                ) : (
-                    <svg className="w-6 h-6 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                    </svg>
-                )}
+                <svg className="w-6 h-6 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
                 <div className="flex flex-col">
                     <span className="font-bold text-sm">{notification.title}</span>
                     <span className="text-xs opacity-90 line-clamp-2 mt-1">{notification.body}</span>

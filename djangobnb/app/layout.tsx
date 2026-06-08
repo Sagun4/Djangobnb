@@ -41,6 +41,9 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         <Navbar />
         <div className="pt-42" >
+          <div className="max-w-[1500px] mx-auto px-6">
+            <NotificationListener userId={userId} />
+          </div>
         {children}
         </div>
       <LoginModal />
@@ -48,7 +51,6 @@ export default async function RootLayout({
       <SignupModal />
       <AddPropertyModal />
       <ProfileModal />
-      <NotificationListener userId={userId} />
       </body>
     </html>
   );
