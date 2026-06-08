@@ -9,6 +9,8 @@ from .views import CustomRegisterView
 urlpatterns = [
     path('register/', CustomRegisterView.as_view(), name='rest_register'),
     path('register', CustomRegisterView.as_view()),
+    path('me/', api.me, name='me'),
+    path('me', api.me),
     path('login/', LoginView.as_view(), name='rest_login'),
     path('login', LoginView.as_view()),
     path('logout/', LogoutView.as_view(), name='rest_logout'),

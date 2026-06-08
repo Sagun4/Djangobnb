@@ -27,3 +27,19 @@ def reservations_list(request):
     
     serializer = ReservationListSerializer(reservations, many=True)
     return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET', 'POST'])
+def me(request):
+    user = request.user
+    if request.method == 'POST':
+        name = request.data.get('name')
+        avatar = request.FILES.get('avatar')
+        if name:
+            user.name = name
+        if avatar:
+            user.avatar = avatar
+        user.save()
+    
+    serializer = UserDetailSerializer(user, many=False)
+    return JsonResponse(serializer.data, safe=False)
