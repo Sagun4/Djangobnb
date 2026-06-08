@@ -62,9 +62,14 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
 
             setRealtimeMessages((realtimeMessages) => [...realtimeMessages, message]);
         }
-
-        scrollToBottom();
     }, [lastJsonMessage]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            scrollToBottom();
+        }, 50);
+        return () => clearTimeout(timer);
+    }, [messages, realtimeMessages]);
 
     const sendMessage = async () => {
         console.log('sendMessage'),
@@ -80,10 +85,6 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
         });
 
         setNewMessage('');
-
-        setTimeout(() => {
-            scrollToBottom()
-        }, 50);
     }
 
     const scrollToBottom = () => {
@@ -122,7 +123,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
         <>
             <div 
                 ref={messagesDiv}
-                className="max-h-100 overflow-auto flex flex-col space-y-4"
+                className="h-[500px] overflow-y-auto pr-2 flex flex-col space-y-4"
             >
                 {messages.map((message, index) => renderMessage(message, `hist_${index}`))}
                 {realtimeMessages.map((message, index) => renderMessage(message, `rt_${index}`))}
