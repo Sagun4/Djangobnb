@@ -12,7 +12,7 @@ const PropertyListItem = ({ property, markFavorite }: PropertyProps) => {
     const imageSrc = property.image_url
         ? property.image_url.startsWith("http")
             ? property.image_url
-            : `http://localhost:8000${property.image_url}`
+            : `${process.env.NEXT_PUBLIC_API_HOST || 'http://localhost:8000'}${property.image_url}`
         : null;
     const router = useRouter();
     return (

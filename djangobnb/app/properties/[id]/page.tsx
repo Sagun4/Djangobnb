@@ -17,7 +17,7 @@ const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> 
                 <Image
                     fill
                     src={property.image_url ? 
-                        (property.image_url.startsWith("http") ? property.image_url : `http://localhost:8000${property.image_url}`) 
+                        (property.image_url.startsWith("http") ? property.image_url : `${process.env.NEXT_PUBLIC_API_HOST || 'http://localhost:8000'}${property.image_url}`) 
                         : '/beach1.jpg'
                     }
                     unoptimized
