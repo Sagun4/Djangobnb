@@ -68,8 +68,14 @@ const SearchModal = () => {
 
             <div className="mt-6 flex flex-row gap-4">
                 <CustomButton
+                    label="Search"
+                    onClick={closeAndSearch}
+                />
+                
+                <CustomButton
                     label="Check in date ->"
                     onClick={() => searchModal.open('checkin')}
+                    className="!bg-gray-500 !hover:bg-gray-600"
                 />
             </div>
         </>
@@ -88,11 +94,18 @@ const SearchModal = () => {
                 <CustomButton
                     label="<- Location"
                     onClick={() => searchModal.open('location')}
+                    className="!bg-gray-500 !hover:bg-gray-600"
+                />
+
+                <CustomButton
+                    label="Search"
+                    onClick={closeAndSearch}
                 />
 
                 <CustomButton
                     label="Check out date ->"
                     onClick={() => searchModal.open('checkout')}
+                    className="!bg-gray-500 !hover:bg-gray-600"
                 />
             </div>
         </>
@@ -111,11 +124,18 @@ const SearchModal = () => {
                 <CustomButton
                     label="<- Check in date"
                     onClick={() => searchModal.open('checkin')}
+                    className="!bg-gray-500 !hover:bg-gray-600"
+                />
+
+                <CustomButton
+                    label="Search"
+                    onClick={closeAndSearch}
                 />
 
                 <CustomButton
                     label="Details ->"
                     onClick={() => searchModal.open('details')}
+                    className="!bg-gray-500 !hover:bg-gray-600"
                 />
             </div>
         </>
@@ -167,6 +187,7 @@ const SearchModal = () => {
                 <CustomButton
                     label="<- Check out date"
                     onClick={() => searchModal.open('checkout')}
+                    className="!bg-gray-500 !hover:bg-gray-600"
                 />
 
                 <CustomButton
