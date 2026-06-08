@@ -26,6 +26,8 @@ class CustomRegisterSerializer(RegisterSerializer):
         return user
     
 class UserDetailSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = [
@@ -33,4 +35,13 @@ class UserDetailSerializer(serializers.ModelSerializer):
             'name',
             'avatar_url',
         ]
+
+    def get_name(self, obj):
+        name = obj.name
+        if not name or '@' in name:
+            email = obj.email or name or ""
+            prefix = email.split('@')[0]
+            clean_name = prefix.replace('.', ' ').replace('_', ' ').replace('-', ' ')
+            return clean_name.title()
+        return name
 
