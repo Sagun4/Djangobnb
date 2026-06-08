@@ -36,11 +36,12 @@ const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> 
                     <Link href={`/landlords/${property.landlord.id}`} className="py-6 flex items-center space-x-4">
                        {property.landlord.avatar_url && (
                         <Image
-                            src={property.landlord.avatar_url}
+                            src={formatImageUrl(property.landlord.avatar_url) || ''}
                             width={50}
                             height={50}
                             className="rounded-full w-12 h-12 object-cover"
                             alt="The user name"
+                            unoptimized
                         />
                           )}
 

@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import ContactButton from "@/app/components/ContactButton";
 import PropertyList from "@/app/components/properties/PropertyList";
-import apiService from "@/app/services/apiService";
+import apiService, { formatImageUrl } from "@/app/services/apiService";
 import { getUserId } from "@/app/lib/actions";
 
 const LandlordDetailPage = async ({ params }: { params: Promise<{ id: string }>}) => {
@@ -18,10 +18,11 @@ const LandlordDetailPage = async ({ params }: { params: Promise<{ id: string }>}
                         {landlord.avatar_url ? (
                             <div className="w-[200px] h-[200px] relative rounded-full overflow-hidden">
                                 <Image
-                                    src={landlord.avatar_url}
+                                    src={formatImageUrl(landlord.avatar_url) || ''}
                                     fill
                                     alt="Landlord avatar"
                                     className="object-cover"
+                                    unoptimized
                                 />
                             </div>
                         ) : (
