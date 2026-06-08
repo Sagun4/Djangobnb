@@ -10,7 +10,8 @@ from useraccount.models import User
 
 @api_view(['GET'])
 def conversations_list(request):
-    serializer = ConversationListSerializer(request.user.conversations.all(), many=True)
+    conversations = request.user.conversations.all().order_by('-modified_at')
+    serializer = ConversationListSerializer(conversations, many=True)
 
     return JsonResponse(serializer.data, safe=False)
 

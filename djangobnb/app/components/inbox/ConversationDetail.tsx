@@ -6,6 +6,8 @@ import { ConversationType } from "@/app/inbox/page";
 import useWebSocket, {ReadyState} from "react-use-websocket";
 import { MessageType } from "@/app/inbox/[id]/page";
 import { UserType } from "@/app/inbox/page";
+import Image from "next/image";
+import { formatImageUrl } from "@/app/services/apiService";
 
 interface ConversationDetailProps {
     token: string;
@@ -38,12 +40,23 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
 
     useEffect(() => {
         if (lastJsonMessage && typeof lastJsonMessage === 'object' && 'name' in lastJsonMessage && 'body' in lastJsonMessage) {
+            const sent_by_id = (lastJsonMessage as any).sent_by_id as string;
+            const sent_by_name = (lastJsonMessage as any).sent_by_name as string;
+            const sent_by_avatar_url = (lastJsonMessage as any).sent_by_avatar_url as string | null;
+
+            const isMyMessage = sent_by_id === userId;
+            const sender: UserType = {
+                id: sent_by_id || (isMyMessage ? userId : (otherUser?.id || '')),
+                name: sent_by_name || (isMyMessage ? (myUser?.name || '') : (otherUser?.name || '')),
+                avatar_url: sent_by_avatar_url || (isMyMessage ? (myUser?.avatar_url || '') : (otherUser?.avatar_url || ''))
+            };
+
             const message: MessageType = {
                 id: '',
-                name: lastJsonMessage.name as string,
+                name: sender.name,
                 body: lastJsonMessage.body as string,
-                sent_to: otherUser as UserType,
-                created_by: myUser as UserType,
+                sent_to: isMyMessage ? (otherUser as UserType) : (myUser as UserType),
+                created_by: sender,
                 conversationId: conversation.id
             }
 
@@ -79,31 +92,40 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
         }
     }
 
+    const renderMessage = (message: MessageType, key: string) => {
+        const isMyMessage = message.created_by.id === userId;
+        return (
+            <div
+                key={key}
+                className={`flex items-end space-x-2 w-[80%] ${isMyMessage ? 'ml-[20%] justify-end space-x-reverse' : ''}`}
+            >
+                {!isMyMessage && (
+                    <div className="w-8 h-8 relative rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                        <Image
+                            fill
+                            src={formatImageUrl(message.created_by.avatar_url) || '/uploads/avatars/placeholder.png'}
+                            alt={message.created_by.name}
+                            className="object-cover"
+                            unoptimized
+                        />
+                    </div>
+                )}
+                <div className={`py-2.5 px-4 rounded-2xl text-gray-800 ${isMyMessage ? 'bg-blue-200 rounded-br-none' : 'bg-gray-200 rounded-bl-none'}`}>
+                    <p className="font-bold text-xs text-gray-500 mb-1">{message.created_by.name}</p>
+                    <p>{message.body}</p>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <>
             <div 
                 ref={messagesDiv}
                 className="max-h-100 overflow-auto flex flex-col space-y-4"
             >
-                {messages.map((message, index) => (
-                    <div
-                        key={index}
-                        className={`w-[80%] py-4 px-6 rounded-xl ${message.created_by.name == myUser?.name ? 'ml-[20%] bg-blue-200' : 'bg-gray-200'}`}
-                    >
-                        <p className="font-bold text-gray-500">{message.created_by.name}</p>
-                        <p>{message.body}</p>
-                    </div>
-                ))}
-
-                {realtimeMessages.map((message, index) => (
-                    <div
-                        key={index}
-                        className={`w-[80%] py-4 px-6 rounded-xl ${message.name == myUser?.name ? 'ml-[20%] bg-blue-200' : 'bg-gray-200'}`}
-                    >
-                        <p className="font-bold text-gray-500">{message.name}</p>
-                        <p>{message.body}</p>
-                    </div>
-                ))}
+                {messages.map((message, index) => renderMessage(message, `hist_${index}`))}
+                {realtimeMessages.map((message, index) => renderMessage(message, `rt_${index}`))}
             </div>
 
             <div className="mt-4 py-4 px-6 flex border border-gray-300 space-x-4 rounded-xl">
