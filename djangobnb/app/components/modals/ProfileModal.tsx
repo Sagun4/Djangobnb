@@ -37,8 +37,13 @@ const ProfileModal = () => {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
+            if (file.size > 4 * 1024 * 1024) {
+                setErrors(['Profile picture must be less than 4MB.']);
+                return;
+            }
             setAvatarFile(file);
             setAvatarUrl(URL.createObjectURL(file));
+            setErrors([]);
         }
     };
 
