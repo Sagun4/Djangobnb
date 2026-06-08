@@ -117,4 +117,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             )
 
     async def chat_notification(self, event):
+        await self.send(text_data=json.dumps(event))
+
+    async def booking_notification(self, event):
         await self.send(text_data=json.dumps(event))

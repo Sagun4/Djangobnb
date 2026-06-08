@@ -3,6 +3,8 @@ from .models import Property, Reservation
 from useraccount.serializers import UserDetailSerializer
 
 class PropertySerializer(serializers.ModelSerializer):
+    is_booked = serializers.SerializerMethodField()
+
     class Meta:
         model = Property
         fields = [
@@ -10,7 +12,11 @@ class PropertySerializer(serializers.ModelSerializer):
             'title',
             'price_per_night',
             'image_url',
+            'is_booked',
         ]
+
+    def get_is_booked(self, obj):
+        return obj.reservations.exists()
 
 class PropertiesDetailSerializer(serializers.ModelSerializer):
     landlord = UserDetailSerializer(read_only=True, many=False)

@@ -8,16 +8,18 @@ interface NotificationListenerProps {
     userId: string | null;
 }
 
-interface ChatNotification {
-    name: string;
+interface NotificationData {
+    type: 'chat' | 'booking';
+    title: string;
     body: string;
-    conversationId: string;
+    conversationId?: string;
+    propertyId?: string;
 }
 
 const NotificationListener: React.FC<NotificationListenerProps> = ({ userId }) => {
     const pathname = usePathname();
     const router = useRouter();
-    const [notification, setNotification] = useState<ChatNotification | null>(null);
+    const [notification, setNotification] = useState<NotificationData | null>(null);
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -46,9 +48,24 @@ const NotificationListener: React.FC<NotificationListenerProps> = ({ userId }) =
 
                             // Only show alert if the user is NOT currently inside this specific chat room
                             if (pathname !== `/inbox/${conversation_id}/` && pathname !== `/inbox/${conversation_id}`) {
-                                setNotification({ name, body, conversationId: conversation_id });
+                                setNotification({
+                                    type: 'chat',
+                                    title: `New message from ${name}`,
+                                    body: body,
+                                    conversationId: conversation_id
+                                });
                                 setIsVisible(true);
                             }
+                        } else if (data.type === 'booking_notification') {
+                            const { property_id, property_title, guest_name } = data;
+
+                            setNotification({
+                                type: 'booking',
+                                title: `Property Booked!`,
+                                body: `${guest_name} just booked your property "${property_title}"`,
+                                propertyId: property_id
+                            });
+                            setIsVisible(true);
                         }
                     } catch (err) {
                         console.error("Error parsing global notification:", err);
@@ -99,16 +116,26 @@ const NotificationListener: React.FC<NotificationListenerProps> = ({ userId }) =
         <div 
             onClick={() => {
                 setIsVisible(false);
-                router.push(`/inbox/${notification.conversationId}`);
+                if (notification.type === 'chat' && notification.conversationId) {
+                    router.push(`/inbox/${notification.conversationId}`);
+                } else if (notification.type === 'booking') {
+                    router.push('/myproperties');
+                }
             }}
             className="fixed top-24 right-6 z-50 max-w-sm w-full bg-emerald-500 text-white p-4 rounded-xl flex items-start justify-between shadow-xl transition-all duration-300 animate-in fade-in slide-in-from-top-4 cursor-pointer hover:bg-emerald-600"
         >
             <div className="flex items-start space-x-3 pr-2">
-                <svg className="w-6 h-6 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
+                {notification.type === 'chat' ? (
+                    <svg className="w-6 h-6 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                ) : (
+                    <svg className="w-6 h-6 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                )}
                 <div className="flex flex-col">
-                    <span className="font-bold text-sm">New message from {notification.name}</span>
+                    <span className="font-bold text-sm">{notification.title}</span>
                     <span className="text-xs opacity-90 line-clamp-2 mt-1">{notification.body}</span>
                 </div>
             </div>

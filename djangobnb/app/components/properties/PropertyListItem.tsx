@@ -7,9 +7,10 @@ import { formatImageUrl } from "@/app/services/apiService";
 interface PropertyProps {
     property: PropertyType;
     markFavorite: (is_favourited: boolean) => void;
+    isLandlordView?: boolean;
 }
 
-const PropertyListItem = ({ property, markFavorite }: PropertyProps) => {
+const PropertyListItem = ({ property, markFavorite, isLandlordView }: PropertyProps) => {
     const imageSrc = formatImageUrl(property.image_url);
     const router = useRouter();
     return (
@@ -28,6 +29,13 @@ const PropertyListItem = ({ property, markFavorite }: PropertyProps) => {
                     className="hover:scale-110 transition-transform duration-300 object-cover"
                 />
             ) : null}
+
+            {isLandlordView && property.is_booked && (
+                <div className="absolute top-3 left-3 z-10 bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider shadow-md">
+                    Booked
+                </div>
+            )}
+
               {markFavorite && (
                     <FavoriteButton
                         id={property.id}

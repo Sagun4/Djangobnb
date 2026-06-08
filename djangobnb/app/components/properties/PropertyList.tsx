@@ -13,6 +13,7 @@ export type PropertyType = {
     image_url: string;
     price_per_night: number;
     is_favorite: boolean;
+    is_booked?: boolean;
 }
 
 interface PropertyListProps {
@@ -129,6 +130,7 @@ const PropertyList: React.FC<PropertyListProps> = ({
                         key={property.id}
                         property={property}
                         markFavorite={(is_favorite: any) => markFavorite(property.id, is_favorite)}
+                        isLandlordView={!!landlord_id}
                     />
                 )
             })}

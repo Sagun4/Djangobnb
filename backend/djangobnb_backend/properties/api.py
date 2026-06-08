@@ -175,6 +175,25 @@ def book_property(request, pk):
             created_by=request.user
         )
 
+        # Send notification to the landlord
+        if property.landlord:
+            try:
+                from channels.layers import get_channel_layer
+                from asgiref.sync import async_to_sync
+                channel_layer = get_channel_layer()
+                if channel_layer:
+                    async_to_sync(channel_layer.group_send)(
+                        f'user_{property.landlord.id}',
+                        {
+                            'type': 'booking_notification',
+                            'property_id': str(property.id),
+                            'property_title': property.title,
+                            'guest_name': request.user.name or request.user.email,
+                        }
+                    )
+            except Exception as e:
+                print('Error sending booking notification to landlord:', e)
+
         return JsonResponse({
             'success': True
         })
