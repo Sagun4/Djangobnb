@@ -92,6 +92,28 @@ export async function getUserId() {
 export async function getAccessToken() {
     let cookieStore = await cookies();
     let accessToken = cookieStore.get('session_access_token')?.value;
+    
+    if (accessToken) {
+        try {
+            const parts = accessToken.split('.');
+            if (parts.length === 3) {
+                const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf-8'));
+                const exp = payload.exp;
+                const now = Math.floor(Date.now() / 1000);
+                // If token expires in less than 10 seconds, force a refresh
+                if (exp && exp - now < 10) {
+                    console.log('Access token is expired or close to expiring, refreshing...');
+                    accessToken = undefined;
+                }
+            } else {
+                accessToken = undefined;
+            }
+        } catch (e) {
+            console.error('Error decoding access token:', e);
+            accessToken = undefined;
+        }
+    }
+
     if (!accessToken) {
         accessToken = await handleRefresh();
     }
