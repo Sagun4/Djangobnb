@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-dev-secret-key-1234567890')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('DEBUG', default=1))
+DEBUG = os.environ.get('DEBUG', 'True') in ['1', 'True', 'true']
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1 [::1] 167.172.91.46 djangobnb-navy.vercel.app api.paudelsagun.com.np paudelsagun.com.np www.paudelsagun.com.np djangobnb-black.vercel.app').split(' ')
 if '127.0.0.1' not in ALLOWED_HOSTS:
