@@ -32,4 +32,4 @@ class TokenAuthMiddleware(BaseMiddleware):
                     query[k] = v
         token_key = query.get('token')
         scope['user'] = await get_user(token_key)
-        return await super().__call__(scope, receive, send)
+        return await self.inner(scope, receive, send)
