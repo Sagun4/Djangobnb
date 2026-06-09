@@ -8,7 +8,7 @@ const MyReservationsPage = async () => {
 
     if (!userId) {
         return (
-            <main className="max-w-[1500px] mx-auto px-6 py-12">
+            <main className="max-w-375 mx-auto px-6 py-12">
                 <p>You need to be authenticated...</p>
             </main>
         )
@@ -18,7 +18,7 @@ const MyReservationsPage = async () => {
     const reservations = Array.isArray(response) ? response : (response.data || []);
 
     return (
-        <main className="max-w-[1500px] mx-auto px-6 pb-6">
+        <main className="max-w-375 mx-auto px-6 pb-6">
             <h1 className="my-6 text-2xl">My reservations</h1>
 
             <div className="space-y-4">
