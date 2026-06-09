@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { getAccessToken } from "@/app/lib/actions";
 
@@ -18,9 +18,14 @@ interface NotificationData {
 
 const NotificationListener: React.FC<NotificationListenerProps> = ({ userId }) => {
     const pathname = usePathname();
+    const pathnameRef = useRef(pathname);
     const router = useRouter();
     const [notification, setNotification] = useState<NotificationData | null>(null);
     const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        pathnameRef.current = pathname;
+    }, [pathname]);
 
     useEffect(() => {
         if (!userId) return;
@@ -45,9 +50,10 @@ const NotificationListener: React.FC<NotificationListenerProps> = ({ userId }) =
 
                         if (data.type === 'chat_notification') {
                             const { conversation_id, body, name } = data;
+                            const currentPathname = pathnameRef.current;
 
                             // Only show alert if the user is NOT currently inside this specific chat room
-                            if (pathname !== `/inbox/${conversation_id}/` && pathname !== `/inbox/${conversation_id}`) {
+                            if (currentPathname !== `/inbox/${conversation_id}/` && currentPathname !== `/inbox/${conversation_id}`) {
                                 setNotification({
                                     type: 'chat',
                                     title: `New message from ${name}`,
@@ -95,7 +101,7 @@ const NotificationListener: React.FC<NotificationListenerProps> = ({ userId }) =
                 socket.close();
             }
         };
-    }, [userId, pathname]);
+    }, [userId]);
 
     useEffect(() => {
         if (isVisible) {
