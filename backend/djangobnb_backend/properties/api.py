@@ -1,3 +1,4 @@
+from django.db.models import Exists, OuterRef
 from django.http import JsonResponse
 from rest_framework.decorators import api_view,authentication_classes,permission_classes
 
@@ -26,8 +27,9 @@ def property_list(request):
     print('User:', user)
 
     favourites = []
-    properties = Property.objects.all()
-    serializer = PropertySerializer(properties, many=True)
+    properties = Property.objects.all().annotate(
+        is_booked_annotated=Exists(Reservation.objects.filter(property=OuterRef('pk')))
+    )
 
     favorites = request.GET.get('favorites', '')
     landlord_id = request.GET.get('landlord_id')
@@ -43,19 +45,15 @@ def property_list(request):
     print('country', country)
 
     if checkin_date and checkout_date:
-        exact_matches = Reservation.objects.filter(start_date=checkin_date) | Reservation.objects.filter(end_date=checkout_date)
-        overlap_matches = Reservation.objects.filter(start_date__lte=checkout_date, end_date__gte=checkin_date)
-        all_matches = []
+        conflicting_properties = Reservation.objects.filter(
+            start_date__lte=checkout_date,
+            end_date__gte=checkin_date
+        ).values_list('property_id', flat=True)
 
-        for reservation in exact_matches | overlap_matches:
-            all_matches.append(reservation.property_id)
-
-
-        properties = properties.exclude(id__in=all_matches)
+        properties = properties.exclude(id__in=conflicting_properties)
 
     if landlord_id:
         properties = properties.filter(landlord__id=landlord_id)
-        serializer = PropertySerializer(properties, many=True)
 
     if favorites and user:
         properties = properties.filter(favourited=user)
@@ -75,17 +73,11 @@ def property_list(request):
     if category and category != 'undefined':
         properties = properties.filter(category=category)
         
-
-
-   
     if user:
-        for property in properties:
-            if user in property.favourited.all():
-                favourites.append(property.id)
+        favourites = list(user.favourited_properties.values_list('id', flat=True))
 
     serializer = PropertySerializer(properties, many=True)       
          
-   
     return JsonResponse({
         'data': serializer.data,
         'favourites': favourites

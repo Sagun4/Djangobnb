@@ -32,44 +32,52 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     # Recieve message from web sockets
     async def receive(self, text_data):
-        data = json.loads(text_data)
+        try:
+            data = json.loads(text_data)
+            payload = data.get('data', {})
 
-        conversation_id = data['data']['conversation_id']
-        sent_to_id = data['data']['sent_to_id']
-        name = data['data']['name']
-        body = data['data']['body']
-        
-        user = self.scope['user']
-        sent_by_id = str(user.id) if user.is_authenticated else ''
-        sent_by_name = user.name if user.is_authenticated else name
-        sent_by_avatar_url = user.avatar_url() if (user.is_authenticated and hasattr(user, 'avatar_url')) else None
+            conversation_id = payload.get('conversation_id')
+            sent_to_id = payload.get('sent_to_id')
+            name = payload.get('name')
+            body = payload.get('body')
+            
+            if not conversation_id or not sent_to_id or not body:
+                print("ChatConsumer: Received incomplete payload:", data)
+                return
+            
+            user = self.scope['user']
+            sent_by_id = str(user.id) if user.is_authenticated else ''
+            sent_by_name = user.name if user.is_authenticated else name
+            sent_by_avatar_url = user.avatar_url() if (user.is_authenticated and hasattr(user, 'avatar_url')) else None
 
-        # Send message to room group
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'body': body,
-                'name': name,
-                'sent_by_id': sent_by_id,
-                'sent_by_name': sent_by_name,
-                'sent_by_avatar_url': sent_by_avatar_url
-            }
-        )
+            # Send message to room group
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'body': body,
+                    'name': name,
+                    'sent_by_id': sent_by_id,
+                    'sent_by_name': sent_by_name,
+                    'sent_by_avatar_url': sent_by_avatar_url
+                }
+            )
 
-        # Send notification to the recipient
-        await self.channel_layer.group_send(
-            f'user_{sent_to_id}',
-            {
-                'type': 'chat_notification',
-                'conversation_id': conversation_id,
-                'body': body,
-                'name': sent_by_name,
-                'sent_by_id': sent_by_id
-            }
-        )
+            # Send notification to the recipient
+            await self.channel_layer.group_send(
+                f'user_{sent_to_id}',
+                {
+                    'type': 'chat_notification',
+                    'conversation_id': conversation_id,
+                    'body': body,
+                    'name': sent_by_name,
+                    'sent_by_id': sent_by_id
+                }
+            )
 
-        await self.save_message(conversation_id, body, sent_to_id)
+            await self.save_message(conversation_id, body, sent_to_id)
+        except Exception as e:
+            print("ChatConsumer error in receive:", str(e))
     
     # Sending messages
     async def chat_message(self, event):

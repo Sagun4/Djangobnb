@@ -16,6 +16,8 @@ class PropertySerializer(serializers.ModelSerializer):
         ]
 
     def get_is_booked(self, obj):
+        if hasattr(obj, 'is_booked_annotated'):
+            return obj.is_booked_annotated
         return obj.reservations.exists()
 
 class PropertiesDetailSerializer(serializers.ModelSerializer):

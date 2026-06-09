@@ -91,7 +91,6 @@ const apiService = {
 
   postWithoutToken: async function (url: string, data: any) : Promise<any> {
     console.log('post',url, data);
-    const token = await getAccessToken();
 
      return new Promise((resolve, reject) => {
         fetch(`${getApiHost()}${url}`, {
