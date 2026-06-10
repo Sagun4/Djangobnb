@@ -4,6 +4,7 @@ import ContactButton from "@/app/components/ContactButton";
 import PropertyList from "@/app/components/properties/PropertyList";
 import apiService, { formatImageUrl } from "@/app/services/apiService";
 import { getUserId } from "@/app/lib/actions";
+import UserAvatar from "@/app/components/UserAvatar";
 
 const LandlordDetailPage = async ({ params }: { params: Promise<{ id: string }>}) => {
     const resolvedParams = await params;
@@ -15,21 +16,12 @@ const LandlordDetailPage = async ({ params }: { params: Promise<{ id: string }>}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <aside className="col-span-1 mb-4">
                     <div className="flex flex-col items-center p-6 rounded-xl border border-gray-300 shadow-xl">
-                        {landlord.avatar_url ? (
-                            <div className="w-[200px] h-[200px] relative rounded-full overflow-hidden">
-                                <Image
-                                    src={formatImageUrl(landlord.avatar_url) || ''}
-                                    fill
-                                    alt="Landlord avatar"
-                                    className="object-cover"
-                                    unoptimized
-                                />
-                            </div>
-                        ) : (
-                            <div className="w-[200px] h-[200px] rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-6xl">
-                                {landlord.name?.charAt(0)?.toUpperCase() || '?'}
-                            </div>
-                        )}
+                        <UserAvatar
+                            avatarUrl={landlord.avatar_url}
+                            name={landlord.name}
+                            sizeClass="w-[200px] h-[200px]"
+                            textClass="text-6xl"
+                        />
 
                         <h1 className="mt-6 text-2xl">{landlord.name}</h1>
 

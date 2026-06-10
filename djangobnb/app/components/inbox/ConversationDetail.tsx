@@ -8,6 +8,7 @@ import { MessageType } from "@/app/inbox/[id]/page";
 import { UserType } from "@/app/inbox/page";
 import Image from "next/image";
 import { formatImageUrl } from "@/app/services/apiService";
+import UserAvatar from "../UserAvatar";
 
 interface ConversationDetailProps {
     token: string;
@@ -101,15 +102,12 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                 className={`flex items-end space-x-2 w-[80%] ${isMyMessage ? 'ml-[20%] justify-end space-x-reverse' : ''}`}
             >
                 {!isMyMessage && (
-                    <div className="w-8 h-8 relative rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-                        <Image
-                            fill
-                            src={formatImageUrl(message.created_by.avatar_url) || '/uploads/avatars/placeholder.png'}
-                            alt={message.created_by.name}
-                            className="object-cover"
-                            unoptimized
-                        />
-                    </div>
+                    <UserAvatar
+                        avatarUrl={message.created_by.avatar_url}
+                        name={message.created_by.name}
+                        sizeClass="w-8 h-8"
+                        textClass="text-xs"
+                    />
                 )}
                 <div className={`py-2.5 px-4 rounded-2xl text-gray-800 ${isMyMessage ? 'bg-blue-200 rounded-br-none' : 'bg-gray-200 rounded-bl-none'}`}>
                     <p className="font-bold text-xs text-gray-500 mb-1">{message.created_by.name}</p>

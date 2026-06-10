@@ -8,6 +8,8 @@ import CustomButton from "../forms/CustomButton";
 import apiService, { formatImageUrl } from "@/app/services/apiService";
 import Image from "next/image";
 
+import UserAvatar from "../UserAvatar";
+
 const ProfileModal = () => {
     const router = useRouter();
     const profileModal = useProfileModal();
@@ -34,16 +36,73 @@ const ProfileModal = () => {
         fetchUserData();
     }, [profileModal.isOpen]);
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
-            if (file.size > 4 * 1024 * 1024) {
-                setErrors(['Profile picture must be less than 4MB.']);
-                return;
-            }
-            setAvatarFile(file);
-            setAvatarUrl(URL.createObjectURL(file));
             setErrors([]);
+
+            try {
+                // Client-side canvas-based resizing and compression to handle any image size and HEIC formats on mobile
+                const compressedBlob = await new Promise<Blob>((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const img = new window.Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            const MAX_WIDTH = 800;
+                            const MAX_HEIGHT = 800;
+                            let width = img.width;
+                            let height = img.height;
+
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height = Math.round((height * MAX_WIDTH) / width);
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width = Math.round((width * MAX_HEIGHT) / height);
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            if (!ctx) {
+                                reject(new Error('Canvas context could not be created'));
+                                return;
+                            }
+                            ctx.drawImage(img, 0, 0, width, height);
+                            canvas.toBlob(
+                                (blob) => {
+                                    if (blob) resolve(blob);
+                                    else reject(new Error('Canvas toBlob failed'));
+                                },
+                                'image/jpeg',
+                                0.85
+                            );
+                        };
+                        img.onerror = () => reject(new Error('Failed to load image'));
+                        img.src = event.target?.result as string;
+                    };
+                    reader.onerror = () => reject(new Error('FileReader failed'));
+                    reader.readAsDataURL(file);
+                });
+
+                const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+                const compressedFile = new File([compressedBlob], `${nameWithoutExt}.jpg`, {
+                    type: 'image/jpeg'
+                });
+
+                setAvatarFile(compressedFile);
+                setAvatarUrl(URL.createObjectURL(compressedFile));
+            } catch (err) {
+                console.error("Image compression error:", err);
+                // Fallback to original file
+                setAvatarFile(file);
+                setAvatarUrl(URL.createObjectURL(file));
+            }
         }
     };
 
@@ -96,21 +155,12 @@ const ProfileModal = () => {
                     <label className="font-semibold text-gray-700">Profile Picture</label>
                     
                     <div className="flex items-center space-x-4">
-                        <div className="w-20 h-20 relative rounded-full overflow-hidden bg-gray-100 border">
-                            {avatarUrl ? (
-                                <Image
-                                    fill
-                                    src={formatImageUrl(avatarUrl) || '/uploads/avatars/placeholder.png'}
-                                    unoptimized
-                                    alt="Avatar preview"
-                                    className="object-cover w-full h-full"
-                                />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-                                    No Image
-                                </div>
-                            )}
-                        </div>
+                        <UserAvatar
+                            avatarUrl={avatarUrl}
+                            name={name}
+                            sizeClass="w-20 h-20"
+                            textClass="text-3xl"
+                        />
 
                         <div className="py-2 px-4 bg-gray-600 text-white rounded-xl cursor-pointer hover:bg-gray-700 transition">
                             <input

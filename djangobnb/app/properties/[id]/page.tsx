@@ -3,6 +3,7 @@ import apiService, { formatImageUrl } from "@/app/services/apiService";
 import ReservationSidebar from "@/app/components/properties/ReservationSidebar";
 import {getUserId} from "@/app/lib/actions";
 import Link from "next/dist/client/link";
+import UserAvatar from "@/app/components/UserAvatar";
 
 const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> }) => {
     const resolvedParams = await params;
@@ -12,7 +13,7 @@ const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> 
     const userId = await getUserId();
 
     return (
-        <main className="max-w-375 mx-auto px-6 pb-6">
+        <main className="max-w-[1500px] mx-auto px-6 pb-6">
             <div className="w-full h-[64vh] mb-4 overflow-hidden rounded-xl relative">
                 <Image
                     fill
@@ -34,16 +35,12 @@ const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> 
                     <hr />
 
                     <Link href={`/landlords/${property.landlord.id}/`} className="py-6 flex items-center space-x-4">
-                       {property.landlord.avatar_url && (
-                        <Image
-                            src={formatImageUrl(property.landlord.avatar_url) || ''}
-                            width={50}
-                            height={50}
-                            className="rounded-full w-12 h-12 object-cover"
-                            alt="The user name"
-                            unoptimized
+                        <UserAvatar
+                            avatarUrl={property.landlord.avatar_url}
+                            name={property.landlord.name}
+                            sizeClass="w-12 h-12"
+                            textClass="text-base"
                         />
-                          )}
 
                         <p><strong> {property.landlord.name}</strong> is your host</p>
                     </Link>
